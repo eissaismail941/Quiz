@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Informatics 60 MCQs - Interactive</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --background-light: #f4f7f6;
+            --card-background: #ffffff;
+            --text-dark: #343a40;
+            --shadow-light: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .quiz-section {
+            display: grid;
+            gap: 20px;
+        }
+
+        .question-block {
+            background-color: var(--card-background);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-item:not(.answered):hover {
+            background-color: #e9ecef;
+            border-color: var(--primary-color);
+        }
+        
+        /* Hide default radio button */
+        .option-item input[type="radio"] {
+            display: none;
+        }
+
+        /* Custom label styling */
+        .option-item label {
+            flex-grow: 1;
+            cursor: pointer;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Result Feedback Styling */
+        .correct-answer {
+            background-color: #e6ffed !important; 
+            border-color: var(--success-color) !important;
+            font-weight: 600;
+        }
+
+        .incorrect-answer {
+            background-color: #ffeded !important; 
+            border-color: var(--danger-color) !important;
+        }
+
+        .feedback-icon {
+            margin-left: auto;
+            font-size: 1.2em;
+            font-weight: 700;
+            padding-left: 15px;
+            white-space: nowrap; /* Prevent icon from wrapping */
+        }
+
+        .feedback-icon.correct {
+            color: var(--success-color);
+        }
+
+        .feedback-icon.incorrect {
+            color: var(--danger-color);
+        }
+
+        /* SCORE DISPLAY */
+        #score-container {
+            position: sticky;
+            top: 20px;
+            margin-bottom: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            background-color: var(--card-background);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border: 2px solid var(--primary-color);
+            z-index: 10;
+        }
+        
+        #score-container h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.1em;
+            color: var(--secondary-color);
+        }
+
+        #score-display {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Health Informatics Final Quiz</h1>
+            <p>Interactive Mode: Get instant feedback for every answer!</p>
+        </header>
+
+        <div id="score-container">
+            <h2>Current Score:</h2>
+            <div id="score-display">0 / 60</div>
+        </div>
+
+        <div class="quiz-section" id="quiz-form">
+            </div>
+        
+    </div>
+
+    <script>
+        const quizData = [
+            // Question data starts here
+            {
+                question: "1. What is Windows primarily classified as?",
+                options: ["Application software", "Hardware component", "Operating system", "Programming language", "Utility tool"],
+                answer: "Operating system",
+            },
+            {
+                question: "2. Which component is the primary way to access programs, settings, and files in Windows?",
+                options: ["Desktop", "Taskbar", "Control Panel", "Start Menu", "File Explorer"],
+                answer: "Start Menu",
+            },
+            {
+                question: "3. What is the main workspace where you interact with applications in Windows?",
+                options: ["Taskbar", "File Explorer", "Desktop", "Start Menu", "Control Panel"],
+                answer: "Desktop",
+            },
+            {
+                question: "4. Which tool is used to manage files and folders in Windows?",
+                options: ["Desktop", "Start Menu", "Control Panel", "Taskbar", "File Explorer"],
+                answer: "File Explorer",
+            },
+            {
+                question: "5. Where is the Taskbar typically located on the screen?",
+                options: ["Top", "Center", "Right", "Bottom", "Left"],
+                answer: "Bottom",
+            },
+            {
+                question: "6. What is the Control Panel primarily used for?",
+                options: ["Creating new documents", "Configuring Windows settings", "Browsing the internet", "Managing running applications", "Sending emails"],
+                answer: "Configuring Windows settings",
+            },
+            {
+                question: "7. What do Windows icons represent?",
+                options: ["Websites", "Programs or files", "Hardware components", "Network connections", "User accounts"],
+                answer: "Programs or files",
+            },
+            {
+                question: "8. Which of the following is NOT a common use for Microsoft Word?",
+                options: ["Letters", "Essays", "Financial calculations", "Reports", "Resumes"],
+                answer: "Financial calculations",
+            },
+            {
+                question: "9. What is the section at the top of a Word document that can display the document title or page number?",
+                options: ["Footers", "Section Break", "Alignment", "Headers", "Ribbon"],
+                answer: "Headers",
+            },
+            {
+                question: "10. Which Word feature allows you to save time and ensure a consistent look by applying a predefined set of formatting?",
+                options: ["Themes", "Hyperlinks", "Inserting Tables", "Cropping Images", "Inserting Charts"],
+                answer: "Themes",
+            },
+            {
+                question: "11. What is the primary purpose of the Ribbon in the Word Interface?",
+                options: ["Displays slides", "Shows the text outline", "Allows for speaker notes", "Customizable toolbar", "Contains tabs with commands"],
+                answer: "Contains tabs with commands",
+            },
+            {
+                question: "12. Which steps are involved in creating a new document in Word?",
+                options: ["Click the \"New\" button.", "Choose a template or start from a blank document.", "Both A and B", "Type your text.", "Save the file."],
+                answer: "Both A and B",
+            },
+            {
+                question: "13. How can you insert an image into a Word document?",
+                options: ["Go to the \"Home\" tab", "Go to the \"Review\" tab", "Go to the \"Insert\" tab", "Go to the \"View\" tab", "Go to the \"Layout\" tab"],
+                answer: "Go to the \"Insert\" tab",
+            },
+            {
+                question: "14. What allows you to create clickable links within your Word document?",
+                options: ["Section Breaks", "Tables", "Hyperlinks", "Footers", "Headers"],
+                answer: "Hyperlinks",
+            },
+            {
+                question: "15. What is Microsoft Excel primarily used for?",
+                options: ["Word processing", "Creating slideshows", "Organizing, analyzing, and manipulating data", "Sending electronic messages", "Editing images"],
+                answer: "Organizing, analyzing, and manipulating data",
+            },
+            {
+                question: "16. In Excel, what is the intersection of a row and a column called?",
+                options: ["Workbook", "Worksheet", "Pivot Table", "Cell", "Formula"],
+                answer: "Cell",
+            },
+            {
+                question: "17. A collection of worksheets in Excel is referred to as a:",
+                options: ["Cell", "Workbook", "Pivot Table", "Range", "Sheet Collection"],
+                answer: "Workbook",
+            },
+            {
+                question: "18. Which type of cell reference adjusts based on the cell's position when copied?",
+                options: ["Absolute", "Relative", "Fixed", "Mixed", "Constant"],
+                answer: "Relative",
+            },
+            {
+                question: "19. In Excel, what must be used before the row or column to make a reference absolute?",
+                options: ["%", "#", "$", "@", "*"],
+                answer: "$",
+            },
+            {
+                question: "20. What are expressions that perform calculations in a spreadsheet called?",
+                options: ["Pivot Tables", "Functions", "Cell References", "Formulas", "Worksheets"],
+                answer: "Formulas",
+            },
+            {
+                question: "21. Which tab is used to protect a worksheet from unauthorized changes?",
+                options: ["Home", "Insert", "Review", "View", "Data"],
+                answer: "Review",
+            },
+            {
+                question: "22. What is PowerPoint primarily used for?",
+                options: ["Word processing", "Financial calculations", "Data analysis", "Creating slideshows", "Sending electronic messages"],
+                answer: "Creating slideshows",
+            },
+            {
+                question: "23. Which pane in the PowerPoint interface allows you to add speaker notes?",
+                options: ["Slides pane", "Notes pane", "Outline pane", "Ribbon", "View pane"],
+                answer: "Notes pane",
+            },
+            {
+                question: "24. What feature applies a visual effect as you move from one slide to the next?",
+                options: ["Animation", "Slide Layout", "Transition", "Presenter View", "Theme"],
+                answer: "Transition",
+            },
+            {
+                question: "25. The main workspace that displays the slides in your presentation is the:",
+                options: ["Notes pane", "Outline pane", "Slides pane", "Ribbon", "Quick Access Toolbar"],
+                answer: "Slides pane",
+            },
+            {
+                question: "26. What is the purpose of using Presenter View?",
+                options: ["To print handouts", "To share the presentation", "To view your presentation with speaker notes and a timer", "To add images and charts", "To save the file as a PDF"],
+                answer: "To view your presentation with speaker notes and a timer",
+            },
+            {
+                question: "27. Which view option allows you to see the presentation with speaker notes and a timer?",
+                options: ["Normal View", "Slide Sorter View", "Reading View", "Presenter View", "Outline View"],
+                answer: "Presenter View",
+            },
+            {
+                question: "28. The Mail Merge feature in Word is used for:",
+                options: ["Creating custom styles", "Automatically generating tables of contents", "Creating personalized documents", "Tracking changes", "Password-protecting documents"],
+                answer: "Creating personalized documents",
+            },
+            {
+                question: "29. What are the two main components of Mail Merge?",
+                options: ["Template and Style", "Data source and Index", "Table of Contents and Headers", "Main document and Data source", "Drop Caps and Watermarks"],
+                answer: "Main document and Data source",
+            },
+            {
+                question: "30. A large initial letter at the beginning of a paragraph is known as a/an:",
+                options: ["Watermark", "Drop Cap", "Index", "Custom Style", "Border"],
+                answer: "Drop Cap",
+            },
+            {
+                question: "31. Which feature is used to automatically generate a list of headings in a document?",
+                options: ["Mail Merge", "Templates", "Indexes", "Tables of Contents", "Tracking Changes"],
+                answer: "Tables of Contents",
+            },
+            {
+                question: "32. To create a Table of Contents, what must first be applied to the text?",
+                options: ["Custom Styles", "Advanced Formatting", "Heading Styles", "Drop Caps", "Watermarks"],
+                answer: "Heading Styles",
+            },
+            {
+                question: "33. To password-protect a confidential document, you would use which feature?",
+                options: ["Mail Merge", "Indexing", "Tracking Changes", "Protecting a Document", "Advanced Formatting"],
+                answer: "Protecting a Document",
+            },
+            {
+                question: "34. What is the purpose of Tracking Changes?",
+                options: ["Creating custom templates", "Collaborating on a document and reviewing comments", "Generating an index", "Applying heading styles", "Applying watermarks"],
+                answer: "Collaborating on a document and reviewing comments",
+            },
+            {
+                question: "35. Which advanced formatting technique involves background images or text?",
+                options: ["Drop Caps", "Borders", "Shading", "Watermarks", "Custom Styles"],
+                answer: "Watermarks",
+            },
+            {
+                question: "36. Which of the following is NOT listed as a Logical Function in Advanced Excel formulas?",
+                options: ["IF", "AND", "VLOOKUP", "OR", "NOT"],
+                answer: "VLOOKUP",
+            },
+            {
+                question: "37. Which function is used to look up a value in a row?",
+                options: ["VLOOKUP", "INDEX", "MATCH", "HLOOKUP", "IF"],
+                answer: "HLOOKUP",
+            },
+            {
+                question: "38. Combining multiple functions within a single formula is known as using:",
+                options: ["Logical Functions", "Lookup Functions", "Data Validation", "Nested Functions", "Calculated Fields"],
+                answer: "Nested Functions",
+            },
+            {
+                question: "39. What is the purpose of Data Validation?",
+                options: ["To filter pivot table data", "To automate tasks", "To create data entry rules", "To combine multiple functions", "To calculate a total cost"],
+                answer: "To create data entry rules",
+            },
+            {
+                question: "40. What feature is used to record and run a sequence of commands to automate tasks in Excel?",
+                options: ["Nested Functions", "Data Validation", "Pivot Tables", "HLOOKUP", "Macros"],
+                answer: "Macros",
+            },
+            {
+                question: "41. Which advanced Pivot Table technique is used to filter data interactively?",
+                options: ["Calculated Fields", "Timelines", "Macros", "Slicers", "Data Validation"],
+                answer: "Slicers",
+            },
+            {
+                question: "42. To filter Pivot Table data by date or time, which tool should be used?",
+                options: ["Slicers", "Calculated Fields", "Timelines", "Nested Functions", "VLOOKUP"],
+                answer: "Timelines",
+            },
+            {
+                question: "43. What is the purpose of a Calculated Field in a Pivot Table?",
+                options: ["To create data entry rules", "To automate a task", "To combine multiple functions", "To create a new field using a formula", "To filter data interactively"],
+                answer: "To create a new field using a formula",
+            },
+            {
+                question: "44. Which tab is used to access the Slide Master view in PowerPoint?",
+                options: ["Home", "Insert", "Animations", "View", "Design"],
+                answer: "View",
+            },
+            {
+                question: "45. The primary purpose of Customizing Master Slides is to:",
+                options: ["Add audio and video", "Create consistent elements across your presentation", "Add entrance and exit effects", "Apply a consistent look and feel using color and fonts", "Embed content from other applications"],
+                answer: "Create consistent elements across your presentation",
+            },
+            {
+                question: "46. Which element is NOT listed as part of a Master Slide?",
+                options: ["Backgrounds", "Headers", "Placeholders", "Footers", "Animations"],
+                answer: "Animations",
+            },
+            {
+                question: "47. Which type of animation adds visual interest and engagement in PowerPoint?",
+                options: ["Entrance", "Exit", "Emphasis", "Path", "All of the above"],
+                answer: "All of the above",
+            },
+            {
+                question: "48. What is the main purpose of using Themes in PowerPoint?",
+                options: ["To create consistent templates", "To add audio and video", "To apply a consistent look and feel to your presentation", "To trigger animations", "To customize headers and footers"],
+                answer: "To apply a consistent look and feel to your presentation",
+            },
+            {
+                question: "49. Which of the following can be customized within a Theme?",
+                options: ["Colors", "Fonts", "Backgrounds", "All of the above", "Only A and B"],
+                answer: "All of the above",
+            },
+            {
+                question: "50. What is the proper definition of Email?",
+                options: ["E-mail = easy mail", "E-mail = excellent mail", "E-mail = electronic mail", "E-mail = extended message", "E-mail = edited message"],
+                answer: "E-mail = electronic mail",
+            },
+            {
+                question: "51. Formal emails should generally avoid the use of:",
+                options: ["Complete sentences", "Proper grammar", "Professional tone", "Contractions and slang", "Respectful tone"],
+                answer: "Contractions and slang",
+            },
+            {
+                question: "52. Which line should clearly address the main point of your email message?",
+                options: ["To: line", "CC: line", "BCC: line", "The subject line", "The signature line"],
+                answer: "The subject line",
+            },
+            {
+                question: "53. What is an appropriate length for a professional email signature?",
+                options: ["1-2 lines", "4-5 lines", "8-10 lines", "As long as necessary", "No signature required"],
+                answer: "4-5 lines",
+            },
+            {
+                question: "54. What is the recommended maximum time to reply to an email?",
+                options: ["Within the hour", "Up to 24-48 hours", "Within the week", "Only during business hours", "Up to 72 hours"],
+                answer: "Up to 24-48 hours",
+            },
+            {
+                question: "55. If you need time to gather information before replying, what should you do?",
+                options: ["Do not reply until you have the information.", "Send a reply explaining the delay.", "Forward the email to someone else.", "Delete the email.", "Call the sender instead."],
+                // **FIXED**: Added the period to match the option string exactly.
+                answer: "Send a reply explaining the delay.", 
+            },
+            {
+                question: "56. The discovery of which medical advancement in the 19th century revolutionized surgery by making it less painful?",
+                options: ["Antibiotics", "Anesthesia", "X-rays", "Vaccines", "Surgical Robotics"],
+                answer: "Anesthesia",
+            },
+            {
+                question: "57. What dramatically reduced mortality rates from infectious diseases in the 20th century?",
+                options: ["Anesthesia", "X-rays", "Vaccines", "Antibiotics", "CT Scans"],
+                answer: "Antibiotics",
+            },
+            {
+                question: "58. What major technological innovation allows for imaging of the body's internal structures, aiding in diagnosis?",
+                options: ["Anesthesia", "X-rays", "Robotics", "Bioprinting", "Antibiotics"],
+                answer: "X-rays",
+            },
+            {
+                question: "59. Which technology offers increased precision, minimal invasiveness, and faster recovery times for surgery?",
+                options: ["Telemedicine", "Rehabilitation Robotics", "Surgical Robotics", "Nanotechnology", "Blockchain"],
+                answer: "Surgical Robotics",
+            },
+            {
+                question: "60. What is the primary benefit of Virtual Reality (VR) in medicine?",
+                options: ["Overlay of digital information on real-world environments", "Minimal invasiveness in surgery", "Enhanced learning and training experiences", "Secure storage of patient data", "Bioprinting of tissue"],
+                answer: "Enhanced learning and training experiences",
+            }
+            // Question data ends here
+        ];
+
+        const optionLetters = ['a', 'b', 'c', 'd', 'e'];
+        const quizForm = document.getElementById('quiz-form');
+        const scoreDisplay = document.getElementById('score-display');
+        let score = 0;
+        let answeredQuestions = 0;
+
+        // Function to update the score display
+        function updateScore() {
+            scoreDisplay.textContent = `${score} / ${quizData.length}`;
+            
+            // Optional: Update score container border color based on performance
+            const percentage = (score / quizData.length) * 100;
+            const scoreContainer = document.getElementById('score-container');
+            if (answeredQuestions > 0) {
+                if (percentage >= 80) {
+                    scoreContainer.style.borderColor = 'var(--success-color)';
+                } else if (percentage >= 50) {
+                    scoreContainer.style.borderColor = 'orange';
+                } else {
+                    scoreContainer.style.borderColor = 'var(--danger-color)';
+                }
+            } else {
+                scoreContainer.style.borderColor = 'var(--primary-color)';
+            }
+        }
+
+        // Function to handle the click on an option
+        window.handleOptionClick = function(event, questionNumber, correctAnswer) {
+            const questionElement = document.getElementById(`q${questionNumber}`);
+            
+            // Check if the question has already been answered
+            if (questionElement.classList.contains('answered')) {
+                return; // Do nothing if already answered
+            }
+
+            const clickedOption = event.currentTarget;
+            const userAnswer = clickedOption.getAttribute('data-value');
+            
+            // Mark the entire question block as answered
+            questionElement.classList.add('answered');
+            answeredQuestions++;
+
+            // Disable interaction for all options in the answered block
+            questionElement.querySelectorAll('.option-item').forEach(item => {
+                item.classList.add('answered');
+                item.onclick = null; // Remove the click listener
+            });
+
+            if (userAnswer === correctAnswer) {
+                // Correct Answer
+                score++;
+                clickedOption.classList.add('correct-answer');
+                clickedOption.innerHTML += '<span class="feedback-icon correct">✓ Correct</span>';
+            } else {
+                // Incorrect Answer
+                clickedOption.classList.add('incorrect-answer');
+                clickedOption.innerHTML += '<span class="feedback-icon incorrect">✗ Yours</span>';
+
+                // Find and highlight the true correct answer
+                const correctOption = questionElement.querySelector(`.option-item[data-value="${correctAnswer}"]`);
+                if (correctOption) {
+                    // Temporarily remove the answered class to allow correct highlight styling
+                    correctOption.classList.remove('answered');
+                    correctOption.classList.add('correct-answer');
+                    // Check if the correct feedback icon is already present to avoid duplication
+                    if (!correctOption.querySelector('.feedback-icon.correct')) {
+                         correctOption.innerHTML += '<span class="feedback-icon correct">✓ Correct Answer</span>';
+                    }
+                   
+                }
+            }
+
+            updateScore();
+        }
+
+        // Function to build the quiz HTML dynamically
+        function buildQuiz() {
+            const output = [];
+            quizData.forEach((currentQuestion, questionNumber) => {
+                const optionsHtml = [];
+                // Use encodeURIComponent to safely pass the string answer to the onclick function
+                const safeCorrectAnswer = encodeURIComponent(currentQuestion.answer);
+
+                currentQuestion.options.forEach((option, optionIndex) => {
+                    const letter = optionLetters[optionIndex];
+
+                    optionsHtml.push(
+                        `<li class="option-item" data-value="${option}" onclick="handleOptionClick(event, ${questionNumber}, decodeURIComponent('${safeCorrectAnswer}'))">
+                            <label><strong>${letter}.</strong> ${option}</label>
+                        </li>`
+                    );
+                });
+
+                output.push(
+                    `<div class="question-block" id="q${questionNumber}">
+                        <div class="question-text">${currentQuestion.question}</div>
+                        <ul class="options-list">
+                            ${optionsHtml.join('')}
+                        </ul>
+                    </div>`
+                );
+            });
+
+            quizForm.innerHTML = output.join('');
+            updateScore(); // Initialize score display
+        }
+
+        // Initialize quiz on page load
+        buildQuiz();
+    </script>
+
+</body>
+</html>
